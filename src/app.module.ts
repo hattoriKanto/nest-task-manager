@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Task } from './task/task.entity';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       type: 'cockroachdb',
       url: new URL(process.env.DATABASE_URL).toString(),
       ssl: true,
+      entities: [Task],
     }),
   ],
   controllers: [AppController],
