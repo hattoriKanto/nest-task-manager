@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './task/task.entity';
+import { User } from './user/user.entity';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,9 +17,11 @@ import { Task } from './task/task.entity';
       type: 'cockroachdb',
       url: new URL(process.env.DATABASE_URL).toString(),
       ssl: true,
-      entities: [Task],
+      entities: [Task, User],
+      synchronize: true,
     }),
     TaskModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

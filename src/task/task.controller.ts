@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from './task.entity';
-import { UpdateTaskDto } from 'src/dtos/update-task.dto';
-import { CreateTaskDto } from 'src/dtos/create-task.dto';
+import { UpdateTaskDto } from 'src/task/dtos/update-task.dto';
+import { CreateTaskDto } from 'src/task/dtos/create-task.dto';
 import { DateFormmatingInterceptor } from 'src/interceptors/date-formatting.interceptor';
 
 @Controller('task')
@@ -30,18 +30,18 @@ export class TaskController {
 
   @UseInterceptors(DateFormmatingInterceptor)
   @Post()
-  create(@Body() data: CreateTaskDto) {
+  create(@Body() data: CreateTaskDto): Promise<Task> {
     return this.service.create(data);
   }
 
   @Delete('/:id')
-  delete(@Param('id') id: string) {
+  delete(@Param('id') id: string): Promise<void> {
     return this.service.delete(parseInt(id));
   }
 
   @UseInterceptors(DateFormmatingInterceptor)
   @Patch('/:id')
-  update(@Param('id') id: string, @Body() data: UpdateTaskDto) {
+  update(@Param('id') id: string, @Body() data: UpdateTaskDto): Promise<Task> {
     return this.service.update(parseInt(id), data);
   }
 }

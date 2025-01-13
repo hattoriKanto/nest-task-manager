@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { CreateTaskDto } from 'src/dtos/create-task.dto';
-import { UpdateTaskDto } from 'src/dtos/update-task.dto';
+import { CreateTaskDto } from 'src/task/dtos/create-task.dto';
+import { UpdateTaskDto } from 'src/task/dtos/update-task.dto';
 
 export class DateFormmatingInterceptor implements NestInterceptor {
   intercept(
