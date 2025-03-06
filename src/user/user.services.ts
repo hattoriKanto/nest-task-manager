@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dtos/user.dtos';
+import messages from './constants/messages';
 
 @Injectable()
 export class UserServices {
@@ -25,7 +26,7 @@ export class UserServices {
   async create({ email, password }: UserDto): Promise<User> {
     const user = await this.findByEmail(email);
     if (user) {
-      throw new ConflictException('User with such email already exist.');
+      throw new ConflictException(messages.userExist);
     }
     const newUser = this.userRepository.create({ email, password });
     return this.userRepository.save(newUser);
@@ -34,7 +35,7 @@ export class UserServices {
   async updatePassword(id: string, password: string): Promise<User> {
     const user = await this.findById(id);
     if (!user) {
-      throw new NotFoundException('User with such id does not exist.');
+      throw new NotFoundException(messages.userNotFoundById);
     }
     Object.assign(user, { password });
     return this.userRepository.save(user);
@@ -43,7 +44,7 @@ export class UserServices {
   async delete(id: string): Promise<User> {
     const user = await this.findById(id);
     if (!user) {
-      throw new NotFoundException('User with such id does not exist.');
+      throw new NotFoundException(messages.userNotFoundById);
     }
     return this.userRepository.remove(user);
   }
