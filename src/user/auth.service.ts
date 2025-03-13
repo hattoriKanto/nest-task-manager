@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserServices } from './user.services';
+import { UserService } from './user.service';
 import { UserDto } from './dtos/user.dtos';
 import { ValidationUserDto } from './dtos/validation-user.dtos';
 import getHashedPassword from './utils/getHashedPassword';
@@ -13,15 +13,15 @@ import messages from './constants/messages';
 @Injectable()
 export class AuthServices {
   constructor(
-    private userServices: UserServices,
-    private jwtServices: JwtService,
+    private userService: UserService,
+    private jwtService: JwtService,
   ) {}
 
   async validateUserById({
     userId,
     password,
   }: ValidationUserDto): Promise<void> {
-    const user = await this.userServices.findById(userId);
+    const user = await this.userService.findById(userId);
     if (!user) {
       throw new NotFoundException(messages.userNotFoundById);
     }
@@ -43,16 +43,16 @@ export class AuthServices {
       email,
       password: `${salt}.${hash}`,
     };
-    const user = await this.userServices.create(newUser);
+    const user = await this.userService.create(newUser);
 
-    const payload = { sub: user.id, email };
+    const payload = { sub: user.id, email: user.email };
     return {
-      access_token: await this.jwtServices.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async logIn({ email, password }: UserDto): Promise<{ access_token: string }> {
-    const user = await this.userServices.findByEmail(email);
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new NotFoundException(messages.userNotFoundByEmail);
     }
@@ -66,7 +66,7 @@ export class AuthServices {
 
     const payload = { sub: user.id, email };
     return {
-      access_token: await this.jwtServices.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 
@@ -79,7 +79,7 @@ export class AuthServices {
 
     const { hash: newHash, salt: newSalt } =
       await getHashedPassword(newPassword);
-    const updatedUser = await this.userServices.updatePassword(
+    const updatedUser = await this.userService.updatePassword(
       userId,
       `${newSalt}.${newHash}`,
     );
@@ -89,7 +89,7 @@ export class AuthServices {
       email: updatedUser.email,
     };
     return {
-      access_token: await this.jwtServices.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 
@@ -98,7 +98,7 @@ export class AuthServices {
     password,
   }: ValidationUserDto): Promise<{ message: string }> {
     await this.validateUserById({ userId, password });
-    await this.userServices.delete(userId);
+    await this.userService.delete(userId);
     return { message: messages.userDeleted };
   }
 }

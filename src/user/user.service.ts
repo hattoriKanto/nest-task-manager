@@ -4,13 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import { User } from './user.entity';
 import { UserDto } from './dtos/user.dtos';
 import messages from './constants/messages';
 
 @Injectable()
-export class UserServices {
+export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}

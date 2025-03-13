@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { UserServices } from './user.services';
+import { UserService } from './user.service';
 import { User } from './user.entity';
 import { UserDto } from './dtos/user.dtos';
-import { ConflictException, NotFoundException } from '@nestjs/common';
 import messages from './constants/messages';
 
 describe('UserService', () => {
-  let userService: UserServices;
+  let userService: UserService;
   let userRepository: Partial<Record<keyof Repository<User>, jest.Mock>>;
   let mockUser: User;
 
@@ -30,12 +30,12 @@ describe('UserService', () => {
 
     const moduleRef = await Test.createTestingModule({
       providers: [
-        UserServices,
+        UserService,
         { provide: getRepositoryToken(User), useValue: userRepository },
       ],
     }).compile();
 
-    userService = moduleRef.get<UserServices>(UserServices);
+    userService = moduleRef.get<UserService>(UserService);
   });
 
   it('should be defiend', () => {
