@@ -11,7 +11,7 @@ import getHashedPassword from './utils/getHashedPassword';
 import messages from './constants/messages';
 
 @Injectable()
-export class AuthServices {
+export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
@@ -64,7 +64,7 @@ export class AuthServices {
       throw new UnauthorizedException(messages.wrongPassword);
     }
 
-    const payload = { sub: user.id, email };
+    const payload = { sub: user.id, email: user.email };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
